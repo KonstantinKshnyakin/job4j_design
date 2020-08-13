@@ -57,6 +57,19 @@ public class MatrixItTest {
     }
 
     @Test
+    public void whenFewEmpty1() {
+        int[][] in = {
+                {1}, {}, {4, 5, 6}, {}, {2}
+        };
+        MatrixIt it = new MatrixIt(in);
+        assertThat(it.next(), is(1));
+        assertThat(it.next(), is(4));
+        assertThat(it.next(), is(5));
+        assertThat(it.next(), is(6));
+        assertThat(it.next(), is(2));
+    }
+
+    @Test
     public void whenEmpty() {
         int[][] in = {
                 {}
