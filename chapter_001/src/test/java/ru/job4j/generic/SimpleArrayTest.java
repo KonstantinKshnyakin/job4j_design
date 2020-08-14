@@ -1,13 +1,12 @@
-package ru.job4j.it;
-
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+package ru.job4j.generic;
 
 import org.junit.Test;
-import ru.job4j.generic.SimpleArray;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class SimpleArrayTest {
 
