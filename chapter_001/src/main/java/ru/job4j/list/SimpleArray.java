@@ -33,7 +33,7 @@ public class SimpleArray<T> implements Iterable<T> {
     }
 
     private void checkGrow() {
-        if (size > elementData.length) {
+        if (size >= elementData.length) {
             int newCapacity = (int) (elementData.length * 1.5);
             elementData = Arrays.copyOf(elementData, newCapacity);
         }
