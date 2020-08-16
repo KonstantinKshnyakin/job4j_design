@@ -54,6 +54,8 @@ public class LinkedList<E> implements Iterable<E> {
         return new Iterator<>() {
             private int cursor = 0;
             private int expectedModCount = modCount;
+            private Node<E> element;
+
 
             @Override
             public boolean hasNext() {
@@ -67,7 +69,12 @@ public class LinkedList<E> implements Iterable<E> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                return node(cursor++).item;
+                if (element == null) {
+                    element = LinkedList.this.first;
+                    return element.item;
+                }
+                element = element.next;
+                return element.item;
             }
 
             private void checkModification() {
