@@ -3,6 +3,7 @@ package ru.job4j.set;
 import ru.job4j.list.SimpleArray;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 public class SimpleSet<T> implements Iterable<T> {
 
@@ -23,7 +24,7 @@ public class SimpleSet<T> implements Iterable<T> {
 
     private boolean checkContainsElement(T model) {
         for (T t : simpleArray) {
-            if (t.equals(model) || model == null) {
+            if (Objects.equals(t, model) || model == null) {
                 return true;
             }
         }
@@ -32,18 +33,6 @@ public class SimpleSet<T> implements Iterable<T> {
 
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<>() {
-            private final Iterator<T> iterator = simpleArray.iterator();
-
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public T next() {
-                return iterator.next();
-            }
-        };
+        return simpleArray.iterator();
     }
 }
