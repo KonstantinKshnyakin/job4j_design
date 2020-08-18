@@ -24,7 +24,7 @@ public class SimpleSet<T> implements Iterable<T> {
 
     private boolean checkContainsElement(T model) {
         for (T t : simpleArray) {
-            if (Objects.equals(t, model) || model == null) {
+            if (Objects.equals(t, model)) {
                 return true;
             }
         }
