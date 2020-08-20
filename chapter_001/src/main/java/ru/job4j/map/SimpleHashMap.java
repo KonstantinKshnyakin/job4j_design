@@ -33,26 +33,24 @@ public class SimpleHashMap<K, V> {
 
     private void checkThresholdAndResize() {
         if (this.size > this.threshold) {
+            int oldCapacity = capacity;
             capacity = capacity * 2;
             threshold = threshold * 2;
-            table = Arrays.copyOf(table, capacity);
-            calculateNewIndex();
+            table = copyArrays(oldCapacity);
         }
     }
 
-    private void calculateNewIndex() {
-        for (int i = 0; i < table.length; i++) {
-            Node<K, V> nodeI = table[i];
-            if (nodeI != null) {
-                int hashI = hash(nodeI.key);
-                int indexI = getIndex(hashI);
-                if (i != indexI) {
-                    Node<K, V> nodeJ = table[indexI];
-                    table[i] = nodeJ;
-                    table[indexI] = nodeI;
-                }
+    private Node<K, V>[] copyArrays(int oldCapacity) {
+        Node<K, V>[] newTable = new Node[this.capacity];
+        for (int i = 0; i < oldCapacity; i++) {
+            Node<K, V> node = table[i];
+            if (node != null) {
+                int hash = hash(node.key);
+                int index = getIndex(hash);
+                newTable[index] = node;
             }
         }
+        return newTable;
     }
 
     private int getIndex(int hash) {
