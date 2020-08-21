@@ -1,15 +1,14 @@
 package ru.job4j.map;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-public class SimpleHashMap<K, V> {
+public class SimpleHashMap<K, V> implements Iterable<SimpleHashMap.Node<K, V>> {
 
     private int size;
     private int threshold;
     private int capacity;
     private float loadFactor;
+    private int modCount;
     private Node<K, V>[] table;
 
     static final float DEFAULT_LOAD_FACTOR = 0.75f;
@@ -20,6 +19,7 @@ public class SimpleHashMap<K, V> {
         this.capacity = DEFAULT_CAPACITY;
         this.table = new Node[this.capacity];
         this.size = 0;
+        this.modCount = 0;
         tableSizeFor();
     }
 
@@ -66,6 +66,7 @@ public class SimpleHashMap<K, V> {
         if (node == null) {
             table[index] = new Node<>(hash, key, value);
             size++;
+            modCount++;
             return true;
         }
         return false;
@@ -88,6 +89,7 @@ public class SimpleHashMap<K, V> {
         if (nodeI.hash == hash && (Objects.equals(key, nodeI.key))) {
             table[index] = null;
             size--;
+            modCount++;
             return true;
         }
         return false;
@@ -107,6 +109,48 @@ public class SimpleHashMap<K, V> {
                 + ", table=" + Arrays.toString(table)
                 + '}';
     }
+
+    @Override
+    public Iterator<Node<K, V>> iterator() {
+        return new Iterator<>() {
+            private int cursor = 0;
+            private int index = 0;
+            private int expectedModCount = modCount;
+
+            @Override
+            public boolean hasNext() {
+                return cursor < size;
+            }
+
+            @Override
+            public Node<K, V> next() {
+                checkModification();
+                checkHasNext();
+                for (int i = index; i < table.length; i++) {
+                    Node<K, V> node = table[i];
+                    if (node != null) {
+                        cursor++;
+                        index = i + 1;
+                        return node;
+                    }
+                }
+                return null;
+            }
+
+            private void checkHasNext() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+            }
+
+            private void checkModification() {
+                if (expectedModCount != modCount) {
+                    throw new ConcurrentModificationException();
+                }
+            }
+        };
+    }
+
 
     static class Node<K, V> implements Map.Entry<K, V> {
         final int hash;
