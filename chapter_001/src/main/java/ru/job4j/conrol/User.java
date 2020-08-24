@@ -1,5 +1,7 @@
 package ru.job4j.conrol;
 
+import java.util.Objects;
+
 public class User {
 
     private int id;
@@ -27,6 +29,30 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof User)) {
+            return false;
+        }
+
+        User user = (User) o;
+
+        if (id != user.id) {
+            return false;
+        }
+        return Objects.equals(name, user.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 
     @Override
