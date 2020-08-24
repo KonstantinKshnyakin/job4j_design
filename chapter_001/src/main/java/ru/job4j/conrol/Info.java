@@ -1,4 +1,4 @@
-package ru.job4j.conrol_task;
+package ru.job4j.conrol;
 
 public class Info {
 
@@ -38,10 +38,10 @@ public class Info {
 
     @Override
     public String toString() {
-        return "Info{" +
-                "added=" + added +
-                ", changed=" + changed +
-                ", deleted=" + deleted +
-                '}';
+        return "Info{"
+                + "added=" + added
+                + ", changed=" + changed
+                + ", deleted=" + deleted
+                + '}';
     }
 }

@@ -1,4 +1,4 @@
-package ru.job4j.conrol_task;
+package ru.job4j.conrol;
 
 import java.util.List;
 
