@@ -7,8 +7,10 @@ import java.util.List;
 public class LogFilter {
     public static List<String> filter(String file) {
         List<String> lines = new ArrayList<>();
-        try (BufferedReader in = new BufferedReader(new FileReader("log.txt"))) {
-            in.lines().filter(s -> s.contains("404")).forEach(lines::add);
+        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
+            in.lines()
+                    .filter(s -> s.contains("404"))
+                    .forEach(lines::add);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -20,7 +22,7 @@ public class LogFilter {
                 new BufferedOutputStream(
                         new FileOutputStream(file)
                 ))) {
-            log.forEach(s -> out.write(s + "\r\n"));
+            log.forEach(s -> out.write(s + System.lineSeparator()));
         } catch (Exception e) {
             e.printStackTrace();
         }
