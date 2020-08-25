@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class Config {
     private final String path;
-    private final Map<String, String> values = new HashMap<>();
+    private Map<String, String> values = new HashMap<>();
 
     public Config(final String path) {
         this.path = path;
@@ -17,12 +17,11 @@ public class Config {
 
     public void load() {
         try (BufferedReader read = new BufferedReader(new FileReader(this.path))) {
-            Map<String, String> stringMap = read.lines()
+            values = read.lines()
                     .filter(s -> !s.isBlank() || !s.isEmpty())
                     .filter(s -> !s.startsWith("#"))
-                    .collect(Collectors.toMap(s -> s.split("=")[0], s -> s.split("=")[1]));
-            values.putAll(stringMap);
-            System.out.println(values);
+                    .map(s -> s.split("="))
+                    .collect(Collectors.toMap(a ->a[0], a ->a[1]));
         } catch (Exception e) {
             e.printStackTrace();
         }
