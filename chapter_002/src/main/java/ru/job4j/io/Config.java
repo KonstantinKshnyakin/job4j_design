@@ -21,7 +21,7 @@ public class Config {
                     .filter(s -> !s.isBlank() || !s.isEmpty())
                     .filter(s -> !s.startsWith("#"))
                     .map(s -> s.split("="))
-                    .collect(Collectors.toMap(a ->a[0], a ->a[1]));
+                    .collect(Collectors.toMap(a -> a[0], a -> a[1]));
         } catch (Exception e) {
             e.printStackTrace();
         }
