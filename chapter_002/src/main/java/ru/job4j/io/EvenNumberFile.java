@@ -17,7 +17,7 @@ public class EvenNumberFile {
     }
 
     private static void print(StringBuilder text) {
-        String[] split = text.toString().split("\r\n");
+        String[] split = text.toString().split(System.lineSeparator());
         for (String str : split) {
             int integer = Integer.parseInt(str);
             System.out.printf("%3s - is even? - %s%n", integer, integer % 2 == 0);
