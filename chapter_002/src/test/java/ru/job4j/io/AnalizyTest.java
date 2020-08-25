@@ -15,13 +15,12 @@ public class AnalizyTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-    private String str1 = "200 10:56:01\n\n500 10:57:01\n\n400 10:58:01\n\n200 10:59:01\n\n500 11:01:02\n\n200 11:02:02";
-    private String str2 = "200 10:56:01\n\n200 10:57:01\n\n300 10:58:01\n\n400 10:59:01\n\n500 11:01:02\n"
-            + "\n400 11:02:02\n\n400 11:03:02\n\n500 11:04:02\n\n200 11:05:02\n\n200 11:06:02\n\n300 11:07:02\n\n"
-            + "200 11:08:02\n\n500 11:09:02\n\n400 11:10:02\n\n200 11:11:02\n\n";
 
     @Test
     public void when() throws IOException {
+        String sep = System.lineSeparator();
+        String str1 = "200 10:56:01" + sep + "500 10:57:01" + sep + "400 10:58:01"
+                + sep + "200 10:59:01" + sep + "500 11:01:02" + sep + "200 11:02:02";
         File source = folder.newFile("source.txt");
         File target = folder.newFile("target.txt");
         try (PrintWriter out = new PrintWriter(source)) {
@@ -41,6 +40,13 @@ public class AnalizyTest {
 
     @Test
     public void when2() throws IOException {
+        String sep = System.lineSeparator();
+        String str2 = "200 10:56:01" + sep + "200 10:57:01" + sep + "300 10:58:01" + sep
+                + "400 10:59:01" + sep + "500 11:01:02" + sep
+                + "400 11:02:02" + sep + "400 11:03:02" + sep + "500 11:04:02" + sep
+                + "200 11:05:02" + sep + "200 11:06:02" + sep + "300 11:07:02" + sep
+                + "200 11:08:02" + sep + "500 11:09:02" + sep + "400 11:10:02" + sep
+                + "200 11:11:02";
         File source = folder.newFile("source.txt");
         File target = folder.newFile("target.txt");
         try (PrintWriter out = new PrintWriter(source)) {
@@ -48,7 +54,6 @@ public class AnalizyTest {
         }
         Analizy.unavailable(source.getAbsolutePath(), target.getAbsolutePath());
         List<String> result = readResult(target.getAbsolutePath());
-        System.out.println(result);
         assertThat(
                 result.get(0),
                 is("с 10:59:01 до 11:05:02")
