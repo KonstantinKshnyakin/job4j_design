@@ -8,8 +8,8 @@ public class Analizy {
 
     public static void unavailable(String source, String target) {
         List<String> read = read(source);
-        String outputLine = processing(read);
-        write(target, outputLine);
+        List<String> outputList = processing(read);
+        write(target, outputList);
     }
 
     private static List<String> read(String source) {
@@ -24,7 +24,8 @@ public class Analizy {
         return lines;
     }
 
-    private static String processing(List<String> inputList) {
+    private static List<String> processing(List<String> inputList) {
+        List<String> outputList = new ArrayList<>();
         String status1 = "500";
         String status2 = "400";
         StringBuilder builder = new StringBuilder();
@@ -38,20 +39,22 @@ public class Analizy {
                     status2 = "300";
                 } else {
                     builder.append(split[1]).append("\r\n");
+                    outputList.add(builder.toString());
+                    builder = new StringBuilder();
                     status1 = "500";
                     status2 = "400";
                 }
             }
         }
-        return builder.toString();
+        return outputList;
     }
 
-    private static void write(String target, String outputLine) {
+    private static void write(String target, List<String> outputList) {
         try (PrintWriter out = new PrintWriter(
                 new BufferedOutputStream(
                         new FileOutputStream(target)
                 ))) {
-            out.write(outputLine);
+            outputList.forEach(out::write);
         } catch (Exception e) {
             e.printStackTrace();
         }
