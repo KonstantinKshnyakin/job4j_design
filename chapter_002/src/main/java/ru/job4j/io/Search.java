@@ -9,12 +9,12 @@ import java.util.List;
 public class Search {
     public static void main(String[] args) throws IOException {
         if (args.length == 0) {
-            throw new IllegalArgumentException("You must specify the starting folder and extension. " +
-                    "Root folder is null. Usage java -jar dir.jar ROOT_FOLDER.");
+            throw new IllegalArgumentException("You must specify the starting folder and extension. "
+                    + "Root folder is null. Usage java -jar dir.jar ROOT_FOLDER.");
         } else if (args.length == 1) {
-            throw new IllegalArgumentException("Only one parameter is specified." +
-                    " You must specify the starting folder and extension.Root folder is null. " +
-                    "Usage java -jar dir.jar ROOT_FOLDER.");
+            throw new IllegalArgumentException("Only one parameter is specified."
+                    + " You must specify the starting folder and extension.Root folder is null. "
+                    + "Usage java -jar dir.jar ROOT_FOLDER.");
         }
         Path start = Paths.get(args[0]);
         search(start, args[1]).forEach(System.out::println);
