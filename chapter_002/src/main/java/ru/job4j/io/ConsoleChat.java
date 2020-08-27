@@ -1,45 +1,62 @@
 package ru.job4j.io;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
 public class ConsoleChat {
 
-    private final List<String> answers = List.of("Более трех часов гремел бой",
-            "Без пяти минут профессор", "Селят за 3 минуты без вопросов.", "В четверг торги не проводились.",
-            "Круглый стол завершит работу в субботу.", "Их вахта завершится в конце августа.", "Добрый вечер, Где тут у вас ноги вытереть?");
+    private static final String FINISH = "закончить";
+    private static final String STOP = "стоп";
+    private static final String PROCEED = "продолжить";
+    private static final String OUTPUT = "./chapter_002/src/main/resources/chat.txt";
+    private static final String INPUT = "./chapter_002/src/main/resources/answers.txt";
 
     public void startChat() {
-        try (PrintWriter out = new PrintWriter(new BufferedOutputStream(new FileOutputStream("chat.txt", true)))) {
-            Scanner scanner = new Scanner(System.in);
-            Random random = new Random();
-            String inputLine = scanner.nextLine();
-            String answer = "";
+        List<String> strList = new ArrayList<>();
+        try (Scanner scanner = new Scanner(System.in)) {
+
+            String answer;
             boolean isRespond = true;
-            while (!inputLine.equals("закончить")) {
-                isRespond = !inputLine.equals("стоп") && (inputLine.equals("продолжить") || isRespond);
+            String inputLine = scanner.nextLine();
+
+            while (!inputLine.equals(FINISH)) {
+                isRespond = !inputLine.equals(STOP) && (inputLine.equals(PROCEED) || isRespond);
+                strList.add(inputLine);
                 if (isRespond) {
-                    int randomInt = random.nextInt(answers.size());
-                    answer = answers.get(randomInt);
+                    answer = getRandomAnswer();
                     System.out.println(answer);
+                    strList.add(answer);
                 }
-                printToFile(out, inputLine, answer, isRespond);
+
                 inputLine = scanner.nextLine();
             }
+        }
+        printToFile(strList);
+    }
+
+    private String getRandomAnswer() {
+        String answer = "";
+        try {
+            Random random = new Random();
+            List<String> strings = Files.readAllLines(Paths.get(INPUT));
+            int index = random.nextInt(strings.size());
+            answer = strings.get(index);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return answer;
     }
 
-    private void printToFile(PrintWriter out, String inputLine, String answer, boolean isRespond) {
-        out.write(inputLine + System.lineSeparator());
-        if (isRespond) {
-            out.write(answer + System.lineSeparator());
+    private void printToFile(List<String> outputStrList) {
+        try (PrintWriter out = new PrintWriter(new BufferedOutputStream(new FileOutputStream(OUTPUT, true)))) {
+            outputStrList.forEach(s -> out.write(s + System.lineSeparator()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
