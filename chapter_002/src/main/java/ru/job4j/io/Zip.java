@@ -19,12 +19,7 @@ public class Zip {
                     packFiles(file, excludeSet, zos);
                     continue;
                 }
-                zos.putNextEntry(new ZipEntry(file.getPath()));
-
-                try (BufferedInputStream out = new BufferedInputStream(new FileInputStream(file))) {
-                    zos.write(out.readAllBytes());
-                }
-                zos.closeEntry();
+                packSingleFile(file, zos);
             }
         }
     }
