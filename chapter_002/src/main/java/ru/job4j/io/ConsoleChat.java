@@ -11,17 +11,17 @@ import java.util.Scanner;
 public class ConsoleChat {
 
     private final List<String> answers = List.of("Более трех часов гремел бой",
-            "Без пяти минут профессор", "Селят за 3 минуты без вопросов.", "В четверг торги не проводились."
-            , "Круглый стол завершит работу в субботу.", "Их вахта завершится в конце августа.", "Добрый вечер, Где тут у вас ноги вытереть?");
+            "Без пяти минут профессор", "Селят за 3 минуты без вопросов.", "В четверг торги не проводились.",
+            "Круглый стол завершит работу в субботу.", "Их вахта завершится в конце августа.", "Добрый вечер, Где тут у вас ноги вытереть?");
 
     public void startChat() {
         try (PrintWriter out = new PrintWriter(new BufferedOutputStream(new FileOutputStream("chat.txt", true)))) {
             Scanner scanner = new Scanner(System.in);
             Random random = new Random();
-            String inputLine;
+            String inputLine = scanner.nextLine();
             String answer = "";
             boolean isRespond = true;
-            while (!(inputLine = scanner.nextLine()).equals("закончить")) {
+            while (!inputLine.equals("закончить")) {
                 isRespond = !inputLine.equals("стоп") && (inputLine.equals("продолжить") || isRespond);
                 if (isRespond) {
                     int randomInt = random.nextInt(answers.size());
@@ -29,6 +29,7 @@ public class ConsoleChat {
                     System.out.println(answer);
                 }
                 printToFile(out, inputLine, answer, isRespond);
+                inputLine = scanner.nextLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
