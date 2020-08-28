@@ -1,55 +1,48 @@
 package ru.job4j.io;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 public class Zip {
 
-    public void packFiles(File source, Set<Path> excludeSet, ZipOutputStream zos) throws IOException {
-        File[] files = source.listFiles();
-        for (File file : files) {
-            if (!excludeSet.contains(file.toPath())) {
-                if (file.isDirectory()) {
-                    packFiles(file, excludeSet, zos);
-                    continue;
-                }
-                packSingleFile(file, zos);
-            }
+    public void packFiles(List<Path> includeList, ZipOutputStream zos) throws IOException {
+        for (Path file : includeList) {
+            packSingleFile(file, zos);
         }
     }
 
-    public void packSingleFile(File source, ZipOutputStream zos) throws IOException {
-        zos.putNextEntry(new ZipEntry(source.getPath()));
+    public void packSingleFile(Path source, ZipOutputStream zos) throws IOException {
+        final String name = source.toString();
+        zos.putNextEntry(new ZipEntry(name));
 
-        try (BufferedInputStream out = new BufferedInputStream(new FileInputStream(source))) {
+        try (BufferedInputStream out = new BufferedInputStream(new FileInputStream(name))) {
             zos.write(out.readAllBytes());
         }
         zos.closeEntry();
     }
 
-    private HashSet<Path> getExcludeFileSet(ArgZip argZip) throws IOException {
-        Path start = Paths.get(argZip.directory());
-        List<Path> searchList = Search.search(start, argZip.exclude());
-        return new HashSet<>(searchList);
+    private List<Path> getIncludeFileList(ArgZip argZip) throws IOException {
+        SearchFiles searcher = new SearchFiles(p -> !p.toString().endsWith(argZip.exclude()));
+        Files.walkFileTree(Paths.get(argZip.directory()), searcher);
+        return searcher.getPaths();
     }
 
     public static void main(String[] args) {
 
         ArgZip argZip = new ArgZip(args);
-        File inputFile = new File(argZip.directory());
-        File outputFile = new File(argZip.output());
+        Path inputFile = Paths.get(argZip.directory());
+        Path outputFile = Paths.get(argZip.output());
 
         Zip zip = new Zip();
-        try (ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(outputFile)))) {
-            if (inputFile.isDirectory()) {
-                Set<Path> excludeSet = zip.getExcludeFileSet(argZip);
-                zip.packFiles(inputFile, excludeSet, zos);
+        try (ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(outputFile.toString())))) {
+            if (inputFile.toFile().isDirectory()) {
+                List<Path> includeList = zip.getIncludeFileList(argZip);
+                zip.packFiles(includeList, zos);
             } else {
                 zip.packSingleFile(inputFile, zos);
             }
