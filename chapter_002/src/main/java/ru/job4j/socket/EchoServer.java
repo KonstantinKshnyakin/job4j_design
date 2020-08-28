@@ -1,17 +1,25 @@
 package ru.job4j.socket;
 
-import java.io.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class EchoServer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(EchoServer.class.getName());
 
     public static final String HELLO = "Hello";
     public static final String EXIT = "Exit";
     public static final String HELLO_FRIEND = "Hello, dear friend.";
     public static final String OK_200 = "HTTP/1.1 200 OK";
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         boolean isBye = false;
         try (ServerSocket server = new ServerSocket(9000)) {
             while (!isBye) {
@@ -39,6 +47,8 @@ public class EchoServer {
                     out.write((OK_200 + sep + sep + responseStr).getBytes());
                 }
             }
+        } catch (IOException e) {
+            LOG.error("External factors", e);
         }
     }
 
