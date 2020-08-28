@@ -15,8 +15,10 @@ public class ConsoleChat {
     private static final String PROCEED = "продолжить";
     private static final String OUTPUT = "./chapter_002/src/main/resources/chat.txt";
     private static final String INPUT = "./chapter_002/src/main/resources/answers.txt";
+    private final List<String> answers = new ArrayList<>();
 
     public void startChat() {
+        initListAnswers();
         List<String> strList = new ArrayList<>();
         try (Scanner scanner = new Scanner(System.in)) {
 
@@ -32,24 +34,25 @@ public class ConsoleChat {
                     System.out.println(answer);
                     strList.add(answer);
                 }
-
                 inputLine = scanner.nextLine();
             }
         }
         printToFile(strList);
     }
 
-    private String getRandomAnswer() {
-        String answer = "";
+    private void initListAnswers() {
         try {
-            Random random = new Random();
             List<String> strings = Files.readAllLines(Paths.get(INPUT));
-            int index = random.nextInt(strings.size());
-            answer = strings.get(index);
+            answers.addAll(strings);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return answer;
+    }
+
+    private String getRandomAnswer() {
+            Random random = new Random();
+            int index = random.nextInt(answers.size());
+        return answers.get(index);
     }
 
     private void printToFile(List<String> outputStrList) {
