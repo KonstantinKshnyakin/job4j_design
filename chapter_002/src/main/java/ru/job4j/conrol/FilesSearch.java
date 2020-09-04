@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import static ru.job4j.conrol.StrConstant.*;
@@ -59,16 +60,8 @@ public class FilesSearch {
     }
 
     private Predicate<Path> getPredicate() {
-        Predicate<Path> predicate = null;
         String searchMethod = argsSearch.getSearchMethod();
         String name = argsSearch.getName();
-        if (searchMethod.equals(M)) {
-            predicate = p -> p.toFile().getName().endsWith(name);
-        } else if (searchMethod.equals(F)) {
-            predicate = p -> p.toFile().getName().equals(name);
-        } else if (searchMethod.equals(R)) {
-            predicate = p -> p.toFile().getName().matches(name);
-        }
-        return predicate;
+        return new SearchPredicate(name).getPredicate(searchMethod);
     }
 }
