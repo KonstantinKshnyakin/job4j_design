@@ -28,7 +28,8 @@ public class ImportDB {
             rd.lines()
                     .filter(s -> !s.isBlank() || !s.isEmpty())
                     .map(s -> s.split(";"))
-                    .map(s -> new User(s[0], s[1]))
+                    .filter(sarr ->  sarr.length == 2)
+                    .map(sarr -> new User(sarr[0], sarr[1]))
                     .forEach(users::add);
         }
         return users;
