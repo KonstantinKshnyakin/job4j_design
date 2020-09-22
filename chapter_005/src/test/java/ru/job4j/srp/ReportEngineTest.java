@@ -16,6 +16,7 @@ public class ReportEngineTest {
     public static final String DATE_FORMAT = "%-12s";
     public static final String SALARY_FORMAT = "%-7.2f";
     public static final String SALARY_STR_FORMAT = "%-7s";
+    private final OutputFormatter formatter = new OutputFormatterImpl();
 
     @Test
     public void whenOldGenerated() {
@@ -73,7 +74,7 @@ public class ReportEngineTest {
     }
 
     @Test
-    public void whenGeneratedForProgrammers() {
+    public void whenGeneratedForProgrammersHTML() {
         MemStore store = new MemStore();
         LocalDate now = LocalDate.now();
         Employee worker = new Employee("Ivan", now, now, 100);
@@ -94,5 +95,57 @@ public class ReportEngineTest {
                 .append(separator).append("</html>")
                 .toString();
         assertThat(engine.generateForProgrammers(em -> true), is(expect));
+    }
+
+    @Test
+    public void whenGeneratedXML() {
+        MemStore store = new MemStore();
+        LocalDate now = LocalDate.now();
+        Employee worker = new Employee("Ivan", now, now, 100);
+        store.add(worker);
+        ReportEngine engine = new ReportEngine(store);
+        String separator = System.lineSeparator();
+        String expect = new StringBuilder()
+                .append("<xml>").append(separator)
+                .append(String.format(NAME_FORMAT
+                        + DATE_FORMAT
+                        + DATE_FORMAT
+                        + SALARY_STR_FORMAT, NAME, HIRED, FIRED, SALARY))
+                .append(separator)
+                .append(String.format(NAME_FORMAT, worker.getName()))
+                .append(String.format(DATE_FORMAT, worker.getHired()))
+                .append(String.format(DATE_FORMAT, worker.getFired()))
+                .append(String.format(SALARY_FORMAT, worker.getSalary() * 1000))
+                .append(separator).append("</xml>")
+                .toString();
+        String actual = engine.generateForBookkeeping(em -> true);
+        String convertToXML = formatter.convertToXML(actual);
+        assertThat(convertToXML, is(expect));
+    }
+
+    @Test
+    public void whenGeneratedJson() {
+        MemStore store = new MemStore();
+        LocalDate now = LocalDate.now();
+        Employee worker = new Employee("Ivan", now, now, 100);
+        store.add(worker);
+        ReportEngine engine = new ReportEngine(store);
+        String separator = System.lineSeparator();
+        String expect = new StringBuilder()
+                .append("{json}").append(separator)
+                .append(String.format(NAME_FORMAT
+                        + DATE_FORMAT
+                        + DATE_FORMAT
+                        + SALARY_STR_FORMAT, NAME, HIRED, FIRED, SALARY))
+                .append(separator)
+                .append(String.format(NAME_FORMAT, worker.getName()))
+                .append(String.format(DATE_FORMAT, worker.getHired()))
+                .append(String.format(DATE_FORMAT, worker.getFired()))
+                .append(String.format(SALARY_FORMAT, worker.getSalary() * 1000))
+                .append(separator).append("{json}")
+                .toString();
+        String actual = engine.generateForBookkeeping(em -> true);
+        String convertToJson = formatter.convertToJson(actual);
+        assertThat(convertToJson, is(expect));
     }
 }

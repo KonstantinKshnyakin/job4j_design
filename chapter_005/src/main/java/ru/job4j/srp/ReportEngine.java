@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 public class ReportEngine {
 
     private final Store store;
+    private final OutputFormatter formatter;
     private static final String NAME = "Name";
     private static final String HIRED = "Hired";
     private static final String FIRED = "Fired";
@@ -25,6 +26,7 @@ public class ReportEngine {
 
     public ReportEngine(Store store) {
         this.store = store;
+        formatter = new OutputFormatterImpl();
     }
 
     public String generate(Predicate<Employee> filter) {
@@ -44,7 +46,6 @@ public class ReportEngine {
     public String generateForProgrammers(Predicate<Employee> filter) {
         StringBuilder text = new StringBuilder();
         List<Employee> sortedList = store.findBy(filter);
-        text.append("<html>").append(System.lineSeparator());
         text.append(getTitle(NAME, HIRED, FIRED, SALARY));
         for (Employee employee : sortedList) {
             text.append(System.lineSeparator())
@@ -53,8 +54,7 @@ public class ReportEngine {
                     .append(getDate(employee.getFired()))
                     .append(getSalary(employee));
         }
-        text.append(System.lineSeparator()).append("</html>");
-        return text.toString();
+        return formatter.convertToHTML(text.toString());
     }
 
     public String generateForBookkeeping(Predicate<Employee> filter) {
