@@ -1,14 +1,23 @@
 package ru.job4j.srp;
 
-import java.time.LocalDate;
-import java.util.Calendar;
+import org.joda.time.LocalDate;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Objects;
 
+@XmlRootElement(name = "employee")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Employee {
+
     private String name;
     private LocalDate hired;
     private LocalDate fired;
-    private double salary;
+    private Double salary;
+
+    public Employee() {
+    }
 
     public Employee(String name, LocalDate hired, LocalDate fired, double salary) {
         this.name = name;
