@@ -6,10 +6,7 @@ import ru.job4j.strategy.foods.Cheese;
 import ru.job4j.strategy.foods.Food;
 import ru.job4j.strategy.foods.Meat;
 import ru.job4j.strategy.foods.Pizza;
-import ru.job4j.strategy.store.FoodStore;
-import ru.job4j.strategy.store.Shop;
-import ru.job4j.strategy.store.Trash;
-import ru.job4j.strategy.store.Warehouse;
+import ru.job4j.strategy.store.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,26 +40,31 @@ public class ControlQualityTest {
         list.add(pizza);
         list.add(cheesedExpire);
 
-        ControlQuality controlQuality = new ControlQuality(new Warehouse(), new Shop(), new Trash());
+        ControlQuality controlQuality = new ControlQuality(new Warehouse(), new Shop(), new DiscountShop(), new Trash());
         controlQuality.control(list);
+
         FoodStore[] foodStores = controlQuality.getFoodStores();
         FoodStore foodStore1 = foodStores[0];
         FoodStore foodStore2 = foodStores[1];
         FoodStore foodStore3 = foodStores[2];
+        FoodStore foodStore4 = foodStores[3];
 
         List<Food> allFoods1 = foodStore1.getAllFoods();
         Assert.assertThat(allFoods1.size(), is(1));
         Assert.assertThat(allFoods1.get(0).getName(), is("Meat"));
 
         List<Food> allFoods2 = foodStore2.getAllFoods();
-        Assert.assertThat(allFoods2.size(), is(2));
+        Assert.assertThat(allFoods2.size(), is(1));
         Assert.assertThat(allFoods2.get(0).getName(), is("Cheese"));
-        Assert.assertThat(allFoods2.get(1).getName(), is("Pizza"));
-        Assert.assertThat(allFoods2.get(1).getDiscount(), is(0.7));
 
         List<Food> allFoods3 = foodStore3.getAllFoods();
         Assert.assertThat(allFoods3.size(), is(1));
-        Assert.assertThat(allFoods3.get(0).getName(), is("Cheese_Expired"));
+        Assert.assertThat(allFoods3.get(0).getName(), is("Pizza"));
+        Assert.assertThat(allFoods3.get(0).getDiscount(), is(0.7));
+
+        List<Food> allFoods4 = foodStore4.getAllFoods();
+        Assert.assertThat(allFoods4.size(), is(1));
+        Assert.assertThat(allFoods4.get(0).getName(), is("Cheese_Expired"));
         System.out.println(Arrays.toString(foodStores));
     }
 }

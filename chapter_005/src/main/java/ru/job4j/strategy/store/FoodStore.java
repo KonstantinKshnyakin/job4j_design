@@ -2,24 +2,15 @@ package ru.job4j.strategy.store;
 
 import ru.job4j.strategy.foods.Food;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FoodStore {
+public interface FoodStore {
 
-    protected List<Food> foods;
+    void addStore(Food food);
 
-    public FoodStore() {
-        this.foods = new ArrayList<>();
-    }
+    Food getFood(int index);
 
-    public abstract boolean addStore(Food food, Double percExpDate);
+    boolean acceptByPercentExpDate(Double percExpDate);
 
-    public Food getFood(int index) {
-        return foods.get(index);
-    }
-
-    public List<Food> getAllFoods() {
-        return foods;
-    }
+    List<Food> getAllFoods();
 }

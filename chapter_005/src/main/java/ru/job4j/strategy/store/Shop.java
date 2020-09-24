@@ -3,24 +3,34 @@ package ru.job4j.strategy.store;
 import ru.job4j.strategy.foods.Food;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class Shop extends FoodStore {
+public class Shop implements FoodStore {
+
+    private final List<Food> foods;
 
     public Shop() {
-        super.foods = new ArrayList<>();
+        foods = new ArrayList<>();
     }
 
     @Override
-    public boolean addStore(Food food, Double percExpDate) {
-        if (percExpDate >= 25 && percExpDate < 75) {
+    public void addStore(Food food) {
             foods.add(food);
-            return true;
-        } else if (percExpDate >= 75 && percExpDate < 100) {
-            food.setDiscount(0.7);
-            foods.add(food);
-            return true;
-        }
-        return false;
+    }
+
+    @Override
+    public Food getFood(int index) {
+        return null;
+    }
+
+    @Override
+    public boolean acceptByPercentExpDate(Double percExpDate) {
+        return percExpDate >= 25 && percExpDate < 75;
+    }
+
+    @Override
+    public List<Food> getAllFoods() {
+        return foods;
     }
 
     @Override

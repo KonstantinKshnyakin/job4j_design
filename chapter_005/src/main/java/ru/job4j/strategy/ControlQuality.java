@@ -23,15 +23,14 @@ public class ControlQuality {
         for (Food food : foods) {
             for (FoodStore foodStore : foodStores) {
                 Double percentExpireDate = getPercentExpireDate(food);
-                boolean isAdd = foodStore.addStore(food, percentExpireDate);
-                if (isAdd) {
-                    break;
+                if (foodStore.acceptByPercentExpDate(percentExpireDate)) {
+                    foodStore.addStore(food);
                 }
             }
         }
     }
 
-    Double getPercentExpireDate(Food food) {
+    private Double getPercentExpireDate(Food food) {
         LocalDate expireDate = food.getExpireDate();
         LocalDate createDate = food.getCreateDate();
         LocalDate now = LocalDate.now();

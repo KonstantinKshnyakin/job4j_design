@@ -5,16 +5,16 @@ import ru.job4j.strategy.foods.Food;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Warehouse implements FoodStore {
+public class DiscountShop implements FoodStore {
 
     private final List<Food> foods;
 
-    public Warehouse() {
+    public DiscountShop() {
         foods = new ArrayList<>();
     }
-
     @Override
     public void addStore(Food food) {
+        food.setDiscount(0.7);
         foods.add(food);
     }
 
@@ -25,7 +25,7 @@ public class Warehouse implements FoodStore {
 
     @Override
     public boolean acceptByPercentExpDate(Double percExpDate) {
-        return percExpDate < 25;
+        return percExpDate >= 75 && percExpDate < 100;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class Warehouse implements FoodStore {
 
     @Override
     public String toString() {
-        return "Warehouse{"
+        return "DiscountShop{"
                 + "foods=" + foods
                 + '}';
     }
