@@ -30,7 +30,7 @@ public class Trash implements FoodStore {
 
     @Override
     public List<Food> getAllFoods() {
-        return new ArrayList<>(this.foods);
+        return this.foods;
     }
 
     @Override

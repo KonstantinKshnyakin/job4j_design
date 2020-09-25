@@ -5,13 +5,14 @@ import ru.job4j.strategy.store.FoodStore;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ControlQuality {
+public class ControlQualityImpl implements IControlQuality {
 
     private final FoodStore[] foodStores;
 
-    public ControlQuality(FoodStore... foodStores) {
+    public ControlQualityImpl(FoodStore... foodStores) {
         this.foodStores = foodStores;
     }
 
@@ -19,6 +20,7 @@ public class ControlQuality {
         return foodStores;
     }
 
+    @Override
     public void control(List<Food> foods) {
         for (Food food : foods) {
             for (FoodStore foodStore : foodStores) {
@@ -28,6 +30,17 @@ public class ControlQuality {
                 }
             }
         }
+    }
+
+    @Override
+    public void resort() {
+        List<Food> foodsList = new ArrayList<>();
+        for (FoodStore foodStore : foodStores) {
+            List<Food> allFoods = foodStore.getAllFoods();
+            foodsList.addAll(allFoods);
+            allFoods.clear();
+        }
+        control(foodsList);
     }
 
     private Double getPercentExpireDate(Food food) {

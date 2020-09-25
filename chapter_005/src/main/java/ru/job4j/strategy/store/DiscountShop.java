@@ -12,6 +12,7 @@ public class DiscountShop implements FoodStore {
     public DiscountShop() {
         foods = new ArrayList<>();
     }
+
     @Override
     public void addStore(Food food) {
         food.setDiscount(0.7);
@@ -30,7 +31,7 @@ public class DiscountShop implements FoodStore {
 
     @Override
     public List<Food> getAllFoods() {
-        return new ArrayList<>(this.foods);
+        return this.foods;
     }
 
     @Override
