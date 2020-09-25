@@ -53,14 +53,15 @@ public class ConverterTest {
     public void whenGeneratedHTML() {
         Converter converterHtml = new ConverterHtml();
         String convert = converterHtml.convert(employees);
-        String expected = "<table>\r\n"
-                + "<tr>\r\n"
-                + "<th>name</th>\r\n"
-                + "<th>hired</th>\r\n"
-                + "<th>fired</th>\r\n"
-                + "<th>salary</th>\r\n"
-                + "</tr>\r\n"
-                + "<tr>\r\n"
+        String sep = System.lineSeparator();
+        String expected = "<table>" + sep
+                + "<tr>" + sep
+                + "<th>name</th>" + sep
+                + "<th>hired</th>" + sep
+                + "<th>fired</th>" + sep
+                + "<th>salary</th>" + sep
+                + "</tr>" + sep
+                + "<tr>" + sep
                 + "<td>Ivan</td><td>2020-09-23</td><td>2020-09-23</td><td>100.0</td></tr></table>";
         assertThat(convert, is(expected));
     }
