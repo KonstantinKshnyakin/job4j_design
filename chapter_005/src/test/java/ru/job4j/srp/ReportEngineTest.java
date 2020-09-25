@@ -79,8 +79,6 @@ public class ReportEngineTest {
     @Test
     public void whenGeneratedForProgrammers() {
         MemStore store = new MemStore();
-        LocalDate now = LocalDate.now();
-        Employee worker = new Employee("Ivan", now, now, 100);
         store.add(worker);
         Report engine = new ReportProgrammers(store);
         String expect = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
