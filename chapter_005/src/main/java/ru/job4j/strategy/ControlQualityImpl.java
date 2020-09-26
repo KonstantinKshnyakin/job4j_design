@@ -36,9 +36,8 @@ public class ControlQualityImpl implements IControlQuality {
     public void resort() {
         List<Food> foodsList = new ArrayList<>();
         for (FoodStore foodStore : foodStores) {
-            List<Food> allFoods = foodStore.getAllFoods();
+            List<Food> allFoods = foodStore.getFoodsAndClear();
             foodsList.addAll(allFoods);
-            allFoods.clear();
         }
         control(foodsList);
     }

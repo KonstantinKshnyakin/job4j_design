@@ -12,5 +12,7 @@ public interface FoodStore {
 
     boolean acceptByPercentExpDate(Double percExpDate);
 
+    List<Food> getFoodsAndClear();
+
     List<Food> getAllFoods();
 }

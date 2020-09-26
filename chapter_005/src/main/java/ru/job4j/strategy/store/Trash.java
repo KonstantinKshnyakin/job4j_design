@@ -29,6 +29,13 @@ public class Trash implements FoodStore {
     }
 
     @Override
+    public List<Food> getFoodsAndClear() {
+        List<Food> foods = new ArrayList<>(this.foods);
+        this.foods.clear();
+        return foods;
+    }
+
+    @Override
     public List<Food> getAllFoods() {
         return this.foods;
     }
