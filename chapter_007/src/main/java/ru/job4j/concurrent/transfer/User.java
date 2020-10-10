@@ -1,5 +1,8 @@
 package ru.job4j.concurrent.transfer;
 
+import net.jcip.annotations.ThreadSafe;
+
+@ThreadSafe
 public class User {
 
     private int id;

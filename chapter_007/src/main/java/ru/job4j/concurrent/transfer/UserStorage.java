@@ -1,5 +1,6 @@
 package ru.job4j.concurrent.transfer;
 
+import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
 import java.util.HashMap;
@@ -7,7 +8,9 @@ import java.util.HashMap;
 @ThreadSafe
 public class UserStorage {
 
+    @GuardedBy("this")
     private final HashMap<Integer, User> users = new HashMap<>();
+    @GuardedBy("this")
     private int countId;
 
     public synchronized int add(User user) {
