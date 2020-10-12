@@ -1,12 +1,10 @@
 package ru.job4j.concurrent.nonblock;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Base {
 
-    private final static AtomicInteger ID_COUNTER = new AtomicInteger();
-    private final AtomicInteger versionCounter = new AtomicInteger();
+    private static int idCounter = 0;
 
     private final int id;
     private int version;
@@ -14,8 +12,8 @@ public class Base {
 
     public Base(String data) {
         this.data = data;
-        this.id = ID_COUNTER.incrementAndGet();
-        this.version = versionCounter.incrementAndGet();
+        this.id = ++idCounter;
+        this.version = 0;
     }
 
     public int getId() {
@@ -27,14 +25,14 @@ public class Base {
     }
 
     public void incrementVersion() {
-        this.version = versionCounter.incrementAndGet();
+        ++version;
     }
 
     public String getData() {
         return data;
     }
 
-    public synchronized void setData(String data) {
+    public void setData(String data) {
         this.data = data;
     }
 
@@ -49,13 +47,12 @@ public class Base {
         Base base = (Base) o;
         return this.id == base.id &&
                 this.version == base.version &&
-                Objects.equals(this.versionCounter, base.versionCounter) &&
                 Objects.equals(this.data, base.data);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(versionCounter, id, version, data);
+        return Objects.hash(id, version, data);
     }
 
     @Override
