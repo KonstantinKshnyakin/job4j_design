@@ -10,7 +10,7 @@ public class NonblockingCacheTest {
     @Test
     public void whenUpdate() throws InterruptedException {
         NonblockingCache cash = new NonblockingCache();
-        Base data1 = new Base("sda34rfw43");
+        Base data1 = new Base(1, 0, "sd432fsd");
         cash.add(data1);
         Runnable run = () -> {
             try {

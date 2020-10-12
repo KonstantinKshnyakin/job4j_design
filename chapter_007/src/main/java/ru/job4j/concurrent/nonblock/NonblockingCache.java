@@ -11,15 +11,16 @@ public class NonblockingCache {
         return bases.putIfAbsent(base.getId(), base);
     }
 
-    public Base update(Base base) {
-        return bases.computeIfPresent(base.getId(),
+    public Base update(Base newBase) {
+        return bases.computeIfPresent(newBase.getId(),
                 (key, oldBase) -> {
-                    if (base.getVersion() != oldBase.getVersion()) {
+                    int newVersion = newBase.getVersion();
+                    if (newVersion != oldBase.getVersion()) {
                         throw new OptimisticException();
                     } else {
-                        base.incrementVersion();
+                        newBase.setVersion(newVersion + 1);
                     }
-                    return base;
+                    return newBase;
                 });
     }
 

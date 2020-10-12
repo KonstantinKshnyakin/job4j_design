@@ -4,16 +4,14 @@ import java.util.Objects;
 
 public class Base {
 
-    private static int idCounter = 0;
-
     private final int id;
     private int version;
     private String data;
 
-    public Base(String data) {
+    public Base(int id, int version, String data) {
+        this.id = id;
+        this.version = version;
         this.data = data;
-        this.id = ++idCounter;
-        this.version = 0;
     }
 
     public int getId() {
@@ -24,8 +22,8 @@ public class Base {
         return version;
     }
 
-    public void incrementVersion() {
-        ++version;
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public String getData() {
