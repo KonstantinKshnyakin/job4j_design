@@ -45,9 +45,9 @@ public class Base {
             return false;
         }
         Base base = (Base) o;
-        return this.id == base.id &&
-                this.version == base.version &&
-                Objects.equals(this.data, base.data);
+        return this.id == base.id
+                && this.version == base.version
+                && Objects.equals(this.data, base.data);
     }
 
     @Override
