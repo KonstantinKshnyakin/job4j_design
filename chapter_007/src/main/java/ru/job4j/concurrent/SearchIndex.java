@@ -6,13 +6,9 @@ import java.util.concurrent.RecursiveTask;
 
 public class SearchIndex<T> extends RecursiveTask<Integer> {
 
-    private T[] array;
-    private int firstIndex;
-    private int desiredIndex;
-
-    public SearchIndex() {
-
-    }
+    private final T[] array;
+    private final int firstIndex;
+    private final int desiredIndex;
 
     private SearchIndex(T[] array, int firstIndex, int desiredIndex) {
         this.array = array;
