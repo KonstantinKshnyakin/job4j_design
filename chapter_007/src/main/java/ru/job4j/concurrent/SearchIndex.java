@@ -19,7 +19,7 @@ public class SearchIndex<T> extends RecursiveTask<Integer> {
 
     @Override
     protected Integer compute() {
-        if (size <= 10) {
+        if (this.size <= 10) {
             return linearSearch();
         } else {
             return createSubtasks();

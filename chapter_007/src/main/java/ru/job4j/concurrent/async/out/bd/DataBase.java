@@ -12,8 +12,8 @@ public class DataBase {
     private final SimpleProperties properties;
     private Connection connection;
 
-    public static final String INSERT_COUNTRY = "insert into country (country_name) values (?)" +
-            " on conflict (country_name) do update set country_name = excluded.country_name returning id";
+    public static final String INSERT_COUNTRY = "insert into country (country_name) values (?)"
+            + " on conflict (country_name) do update set country_name = excluded.country_name returning id";
     public static final String INSERT_MEMBERS = "insert into member (first_name, last_name, rating, country_id) values (?, ?, ?, ?)";
 
 
