@@ -1,6 +1,5 @@
 package ru.job4j.concurrent;
 
-import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
@@ -9,16 +8,18 @@ public class SearchIndex<T> extends RecursiveTask<Integer> {
     private final T[] array;
     private final int firstIndex;
     private final int desiredIndex;
+    private final int size;
 
-    private SearchIndex(T[] array, int firstIndex, int desiredIndex) {
+    private SearchIndex(T[] array, int firstIndex, int desiredIndex, int size) {
         this.array = array;
         this.firstIndex = firstIndex;
         this.desiredIndex = desiredIndex;
+        this.size = size;
     }
 
     @Override
     protected Integer compute() {
-        if (array.length <= 10) {
+        if (size <= 10) {
             return linearSearch();
         } else {
             return createSubtasks();
@@ -26,28 +27,25 @@ public class SearchIndex<T> extends RecursiveTask<Integer> {
     }
 
     private Integer createSubtasks() {
-        int length = array.length;
-        int mid = length / 2;
+        int mid = size / 2;
 
-        int left = createSubtask(0, mid, firstIndex);
-        int right = createSubtask(mid, length, firstIndex + mid);
+        int left = createSubtask(mid, firstIndex);
+        int right = createSubtask(size - mid, firstIndex + mid);
         return left != -1
                 ? left
                 : right;
     }
 
-    private int createSubtask(int from, int to, int firstIndex) {
-        T[] leftPart1 = Arrays.copyOfRange(array, from, to);
-        SearchIndex<T> leftSort = new SearchIndex<>(leftPart1, firstIndex, this.desiredIndex);
-        leftSort.fork();
-        return leftSort.join();
+    private int createSubtask(int size, int firstIndex) {
+        SearchIndex<T> newTask = new SearchIndex<>(array, firstIndex, desiredIndex, size);
+        newTask.fork();
+        return newTask.join();
     }
 
     private int linearSearch() {
-        for (int i = 0; i < array.length; i++) {
-            int index = i + firstIndex;
-            if (desiredIndex == index) {
-                return index;
+        for (int i = firstIndex; i < firstIndex + size; i++) {
+            if (desiredIndex == i) {
+                return i;
             }
         }
         return -1;
@@ -55,6 +53,6 @@ public class SearchIndex<T> extends RecursiveTask<Integer> {
 
     public static <R> int search(R[] array, int desiredIndex) {
         ForkJoinPool pool = new ForkJoinPool();
-        return pool.invoke(new SearchIndex<>(array, 0, desiredIndex));
+        return pool.invoke(new SearchIndex<>(array, 0, desiredIndex, array.length));
     }
 }
