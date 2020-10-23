@@ -1,21 +1,16 @@
 package ru.job4j.bd;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import ru.job4j.model.Item;
+import ru.job4j.model.User;
 
-import java.util.List;
-
-public class ItemDao implements ItemDaoInterface {
+public class SessionFactoryLoc {
 
     private Session currentSession;
     private Transaction currentTransaction;
-
-    public ItemDao() {
-    }
 
     public Session openCurrentSession() {
         currentSession = getSessionFactory().openSession();
@@ -37,8 +32,11 @@ public class ItemDao implements ItemDaoInterface {
         currentSession.close();
     }
 
-    private static SessionFactory getSessionFactory() {
-        Configuration configuration = new Configuration().configure();
+    private static org.hibernate.SessionFactory getSessionFactory() {
+        Configuration configuration = new Configuration()
+                .addAnnotatedClass(Item.class)
+                .addAnnotatedClass(User.class)
+                .configure();
         StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
                 .applySettings(configuration.getProperties());
         return configuration.buildSessionFactory(builder.build());
@@ -58,36 +56,5 @@ public class ItemDao implements ItemDaoInterface {
 
     public void setCurrentTransaction(Transaction currentTransaction) {
         this.currentTransaction = currentTransaction;
-    }
-
-    @Override
-    public void save(Item item) {
-        getCurrentSession().save(item);
-    }
-
-    @Override
-    public void update(Item item) {
-        getCurrentSession().update(item);
-    }
-
-    @Override
-    public Item findById(int id) {
-        return getCurrentSession().get(Item.class, id);
-    }
-
-    @Override
-    public void delete(Item entity) {
-        getCurrentSession().delete(entity);
-    }
-
-    @Override
-    public List<Item> findAll() {
-        return getCurrentSession()
-                .createQuery("from Item", Item.class).list();
-    }
-
-    public void deleteAll() {
-        getCurrentSession()
-                .createQuery("delete from Item", Item.class);
     }
 }

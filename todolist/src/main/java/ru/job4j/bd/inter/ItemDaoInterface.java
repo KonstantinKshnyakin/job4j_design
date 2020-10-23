@@ -1,4 +1,4 @@
-package ru.job4j.bd;
+package ru.job4j.bd.inter;
 
 import ru.job4j.model.Item;
 

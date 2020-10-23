@@ -5,15 +5,21 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "item")
+@Table(name = "ITEMS")
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-    String description;
-    LocalDateTime created;
-    Boolean isDone;
+    private Integer id;
+
+    @Column(name = "DESCRIPTION", nullable = false)
+    private String description;
+
+    @Column(name = "CREATED", nullable = false)
+    private LocalDateTime created;
+
+    @Column(name = "IS_DONE")
+    private Boolean isDone;
 
     public Item() {
     }
