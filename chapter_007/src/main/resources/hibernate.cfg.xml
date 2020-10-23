@@ -19,5 +19,7 @@
         <mapping class="ru.job4j.hibernate.config.task2.Car"/>
         <mapping class="ru.job4j.hibernate.mapping.task1.User"/>
         <mapping class="ru.job4j.hibernate.mapping.task1.Role"/>
+        <mapping class="ru.job4j.hibernate.mapping.task2.example.Role2"/>
+        <mapping class="ru.job4j.hibernate.mapping.task2.example.User2"/>
     </session-factory>
 </hibernate-configuration>
