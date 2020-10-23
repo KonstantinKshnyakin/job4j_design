@@ -25,5 +25,7 @@
         <mapping class="ru.job4j.hibernate.mapping.task2.task.Model"/>
         <mapping class="ru.job4j.hibernate.mapping.task3.example.Person"/>
         <mapping class="ru.job4j.hibernate.mapping.task3.example.Address"/>
+        <mapping class="ru.job4j.hibernate.mapping.task4.example.Task"/>
+        <mapping class="ru.job4j.hibernate.mapping.task4.example.Category"/>
     </session-factory>
 </hibernate-configuration>
