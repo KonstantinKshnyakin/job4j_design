@@ -15,6 +15,7 @@
         <module>chapter_004</module>
         <module>chapter_005</module>
         <module>chapter_007</module>
+        <module>todolist</module>
     </modules>
 
     <name>job4j_design</name>
