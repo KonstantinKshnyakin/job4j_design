@@ -14,10 +14,11 @@ import java.util.function.Function;
 
 public class SessionFactoryLoc implements AutoCloseable {
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
+    private final StandardServiceRegistry registry;
 
     public SessionFactoryLoc() {
-        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+        registry = new StandardServiceRegistryBuilder()
                 .configure()
                 .build();
         sessionFactory = new MetadataSources(registry)
@@ -54,5 +55,6 @@ public class SessionFactoryLoc implements AutoCloseable {
     @Override
     public void close() throws Exception {
         sessionFactory.close();
+        StandardServiceRegistryBuilder.destroy(registry);
     }
 }
