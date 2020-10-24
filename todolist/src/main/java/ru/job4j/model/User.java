@@ -1,36 +1,33 @@
 package ru.job4j.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "FIRST_NAME", nullable = false)
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "LAST_NAME", nullable = false)
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "USER_ITEMS",
-            joinColumns = @JoinColumn(name = "USER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "ITEM_ID")
-    )
-    private List<Item> itemList;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Item> items;
 
-    public User() {
-    }
-
-    public User(String firstName, String lastName) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public static User of(String firstName, String lastName) {
+        User user = new User();
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user.items = new ArrayList<>();
+        return user;
     }
 
     public Integer getId() {
@@ -57,12 +54,16 @@ public class User {
         this.lastName = lastName;
     }
 
-    public List<Item> getItemList() {
-        return itemList;
+    public List<Item> getItems() {
+        return items;
     }
 
-    public void setItemList(List<Item> tasksList) {
-        this.itemList = tasksList;
+    public void addItems(List<Item> tasksList) {
+        this.items.addAll(tasksList);
+    }
+
+    public void addItem(Item item) {
+        this.items.add(item);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class User {
                 + "id=" + id
                 + ", firstName='" + firstName + '\''
                 + ", lastName='" + lastName + '\''
-                + ", tasksList=" + itemList
+                + ", tasksList=" + items
                 + '}';
     }
 
@@ -95,15 +96,16 @@ public class User {
         if (!Objects.equals(lastName, user.lastName)) {
             return false;
         }
-        return Objects.equals(itemList, user.itemList);
+        return Objects.equals(items, user.items);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
+        int result = 17;
+        result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
-        result = 31 * result + (itemList != null ? itemList.hashCode() : 0);
+        result = 31 * result + (items != null ? items.hashCode() : 0);
         return result;
     }
 }

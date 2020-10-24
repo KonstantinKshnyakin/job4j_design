@@ -1,5 +1,6 @@
 package ru.job4j.bd.dao;
 
+import org.hibernate.query.Query;
 import ru.job4j.bd.SessionFactoryLoc;
 import ru.job4j.bd.inter.ItemDaoInterface;
 import ru.job4j.model.Item;
@@ -8,51 +9,51 @@ import java.util.List;
 
 public class ItemDao implements ItemDaoInterface {
 
-    private SessionFactoryLoc sessionFactoryLoc;
+    private final SessionFactoryLoc sessionFactoryLoc;
 
+    public ItemDao() {
+        sessionFactoryLoc = new SessionFactoryLoc();
+    }
 
     @Override
     public void save(Item item) {
-        sessionFactoryLoc.openCurrentSessionWithTransaction();
-        sessionFactoryLoc.getCurrentSession().save(item);
-        sessionFactoryLoc.closeCurrentSessionWithTransaction();
+        sessionFactoryLoc.makeTransaction(session -> session.persist(item));
     }
 
     @Override
     public void update(Item item) {
-        sessionFactoryLoc.openCurrentSessionWithTransaction();
-        sessionFactoryLoc.getCurrentSession().update(item);
-        sessionFactoryLoc.closeCurrentSessionWithTransaction();
+        sessionFactoryLoc.makeTransaction(session -> session.update(item));
     }
 
     @Override
     public Item findById(int id) {
-        sessionFactoryLoc.openCurrentSession();
-        Item item = sessionFactoryLoc.getCurrentSession().get(Item.class, id);
-        sessionFactoryLoc.closeCurrentSession();
-        return item;
+        return sessionFactoryLoc.makeSession(
+                session -> {
+                    Query<Item> query = session.createQuery(
+                            "select i from Item i join fetch i.categories where i.id = :id",
+                            Item.class
+                    );
+                    query.setParameter("id", id);
+                    return query.getSingleResult();
+                }
+        );
     }
 
     @Override
     public void delete(Item item) {
-        sessionFactoryLoc.openCurrentSessionWithTransaction();
-        sessionFactoryLoc.getCurrentSession().delete(item);
-        sessionFactoryLoc.closeCurrentSessionWithTransaction();
+        sessionFactoryLoc.makeTransaction(session -> session.delete(item));
     }
 
     @Override
     public List<Item> findAll() {
-        sessionFactoryLoc.openCurrentSession();
-        List<Item> items = sessionFactoryLoc.getCurrentSession()
-                .createQuery("from Item", Item.class).list();
-        sessionFactoryLoc.closeCurrentSession();
-        return items;
+        return sessionFactoryLoc.makeSession(
+                session -> session.createQuery("select i from Item i join fetch i.categories", Item.class).list()
+        );
     }
 
     public void deleteAll() {
-        sessionFactoryLoc.openCurrentSessionWithTransaction();
-        sessionFactoryLoc.getCurrentSession()
-                .createQuery("delete from Item", Item.class);
-        sessionFactoryLoc.closeCurrentSessionWithTransaction();
+        sessionFactoryLoc.makeTransaction(
+                session -> session.createQuery("delete from Item", Item.class)
+        );
     }
 }

@@ -2,32 +2,37 @@ package ru.job4j.model;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ITEMS")
+@Table(name = "items")
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "DESCRIPTION", nullable = false)
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "CREATED", nullable = false)
+    @Column(name = "created", nullable = false)
     private LocalDateTime created;
 
-    @Column(name = "IS_DONE")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private List<Category> categories;
+
+    @Column(name = "is_done")
     private Boolean isDone;
 
-    public Item() {
-    }
-
-    public Item(String description) {
-        this.description = description;
-        this.created = LocalDateTime.now();
-        this.isDone = false;
+    public static Item of(String description) {
+        Item item = new Item();
+        item.description = description;
+        item.created = LocalDateTime.now();
+        item.categories = new ArrayList<>();
+        item.isDone = false;
+        return item;
     }
 
     public Integer getId() {
@@ -54,12 +59,25 @@ public class Item {
         isDone = done;
     }
 
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void addCategories(List<Category> category) {
+        this.categories.addAll(category);
+    }
+
+    public void addCategory(Category category) {
+        this.categories.add(category);
+    }
+
     @Override
     public String toString() {
         return "Item{"
                 + "id=" + id
                 + ", description='" + description + '\''
                 + ", created=" + created
+                + ", category=" + categories
                 + ", isDone=" + isDone
                 + '}';
     }
@@ -84,6 +102,9 @@ public class Item {
         if (!Objects.equals(created, item.created)) {
             return false;
         }
+        if (!Objects.equals(categories, item.categories)) {
+            return false;
+        }
         return Objects.equals(isDone, item.isDone);
     }
 
@@ -93,6 +114,7 @@ public class Item {
         result = 31 * result + (id != null ? id.hashCode() : 0);
         result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (created != null ? created.hashCode() : 0);
+        result = 31 * result + (categories != null ? created.hashCode() : 0);
         result = 31 * result + (isDone != null ? isDone.hashCode() : 0);
         return result;
     }

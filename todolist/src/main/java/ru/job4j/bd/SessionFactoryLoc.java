@@ -1,60 +1,58 @@
 package ru.job4j.bd;
 
 import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
+import ru.job4j.model.Category;
 import ru.job4j.model.Item;
 import ru.job4j.model.User;
 
-public class SessionFactoryLoc {
+import java.util.function.Consumer;
+import java.util.function.Function;
 
-    private Session currentSession;
-    private Transaction currentTransaction;
+public class SessionFactoryLoc implements AutoCloseable {
 
-    public Session openCurrentSession() {
-        currentSession = getSessionFactory().openSession();
-        return currentSession;
-    }
+    private SessionFactory sessionFactory;
 
-    public Session openCurrentSessionWithTransaction() {
-        currentSession = getSessionFactory().openSession();
-        currentTransaction = currentSession.beginTransaction();
-        return currentSession;
-    }
-
-    public void closeCurrentSession() {
-        currentSession.close();
-    }
-
-    public void closeCurrentSessionWithTransaction() {
-        currentTransaction.commit();
-        currentSession.close();
-    }
-
-    private static org.hibernate.SessionFactory getSessionFactory() {
-        Configuration configuration = new Configuration()
+    public SessionFactoryLoc() {
+        StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure()
+                .build();
+        sessionFactory = new MetadataSources(registry)
                 .addAnnotatedClass(Item.class)
                 .addAnnotatedClass(User.class)
-                .configure();
-        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
-                .applySettings(configuration.getProperties());
-        return configuration.buildSessionFactory(builder.build());
+                .addAnnotatedClass(Category.class)
+                .buildMetadata()
+                .buildSessionFactory();
     }
 
-    public Session getCurrentSession() {
-        return currentSession;
+    public <T> T makeSession(Function<Session, T> function) {
+        T entity = null;
+        try (Session session = sessionFactory.openSession()) {
+            entity = function.apply(session);
+            sessionFactory.close();
+        } catch (Exception e) {
+            sessionFactory.getCurrentSession().getTransaction().rollback();
+        }
+        return entity;
     }
 
-    public void setCurrentSession(Session currentSession) {
-        this.currentSession = currentSession;
+    public void makeTransaction(Consumer<Session> consumer) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            consumer.accept(session);
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            sessionFactory.getCurrentSession().getTransaction().rollback();
+        }
     }
 
-    public Transaction getCurrentTransaction() {
-        return currentTransaction;
-    }
-
-    public void setCurrentTransaction(Transaction currentTransaction) {
-        this.currentTransaction = currentTransaction;
+    @Override
+    public void close() throws Exception {
+        sessionFactory.close();
     }
 }
